@@ -10,25 +10,27 @@ import { ServerService } from './service/server.service';
 import { Status } from './enum/status.enum';
 import { CustomResponse } from './interface/custom-response';
 import { FormsModule, NgForm } from '@angular/forms';
-import { SiteService } from './service/site.service';
-import { SiteResponse } from './interface/site-response';
-import { SiteStatus } from './enum/site-status.enum';
+import { ClientService } from './service/client.service';
+import { ClientResponse } from './interface/client-response';
+import { ClientStatus } from './enum/client-status';
+import { Client } from './interface/client';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, HttpClientModule, CommonModule, FormsModule],
-  //  Example site management app:
-  // templateUrl: './site-app.component.html',
+  //  Example client management app:
+  templateUrl: './components/client-app.component.html',
   //  Server management app:
-  templateUrl: './app.component.html',
+  //templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  //  Server management app:
-  ///*
-  title = 'server-app';
+  title = 'management-app';
+  
+  //  Server management application:
+  /*
   //  Application state. Can subscribe to this Observable, in the form of a CustomResponse.
   appState$: Observable<AppState<CustomResponse>>;
   //  readonlys to use in html.
@@ -198,73 +200,161 @@ export class AppComponent implements OnInit {
     //  Remove link from document after click.
     document.body.removeChild(downloadLink);
     */
-  }
-
+  //}
   //*/
 
-  //  Example site management app:
-  /*
-  title = 'site-app';
+  //  Client management application.
+
   //  Application state. Can subscribe to this Observable, in the form of a CustomResponse.
-  appState$: Observable<AppState<SiteResponse>>;
+  appState$: Observable<AppState<ClientResponse>>;
   //  readonlys to use in html.
   readonly DataState = DataState;
-  readonly SiteStatus = SiteStatus;
+  //  Note: updated to Client Status.
+  readonly ClientStatus = ClientStatus;
   //  Filter subject, and an Observable from it, for use in UI showing loading or other icon.
   private filterSubject = new BehaviorSubject<string>('');
   //  DataSubject to store response from the functions below.
-  private dataSubject = new BehaviorSubject<SiteResponse>(null);
+  private dataSubject = new BehaviorSubject<ClientResponse>(null);
   filterStatus$ = this.filterSubject.asObservable();
+    //  Variable/data subject for displaying spinner when saving a new server. Default is false.
+    //  NOTE: isLoading can be used to set the value.
+    private isLoading = new BehaviorSubject<boolean>(false);
+    //  Object for the data subject isLoading, to make it an Observable. Can be subscribed to.
+    //  NOTE: isLoading$ can be used in the UI/HTML.
+    isLoading$ = this.isLoading.asObservable();
   //  Constructor.
-  constructor(private siteService: SiteService){}
+  constructor(private clientService: ClientService){}
   
-  //  On initialisation, map app state in form of SiteResponse.
+  //  On initialisation, map app state in form of ClientResponse.
   ngOnInit(): void {
     //  Set application state on init. Subscribe to this Observable.
-    this.appState$ = this.siteService.sites$
+    this.appState$ = this.clientService.clients$
     .pipe(
-      //  Return response, in form of SiteResponse, through a callback function.
+      //  Return response, in form of ClientResponse, through a callback function.
       map(response => {
         //  Store response in the variable.
         this.dataSubject.next(response);
-        return { dataState: DataState.LOADED_STATE, appData: response } 
+        //  Override the servers property so it lists most recent one first.
+        return { dataState: DataState.LOADED_STATE, appData: {...response, data: { clients: response.data.clients.reverse() }}} 
       }),
       //  Return while waiting.
       startWith({ dataState: DataState.LOADING_STATE }),
-      //  Return error from handleError function if error. Return an Observable (SiteResponse)
+      //  Return error from handleError function if error. Return an Observable (CustomResponse)
       catchError((error: string) => {
         return of({ dataState: DataState.ERROR_STATE, error })
       })
     );
   }
 
-  //  Function to ping site.
-  pingSite(siteURL: string): void {
+  //  Function to ping company URL.
+  pingURL(clientCompanyURL: string): void {
     //  Pass IP address to the filterSubject, so server with IP address has spinner for ping.
-    this.filterSubject.next(siteURL);
+    this.filterSubject.next(clientCompanyURL);
     //  Set application state. Subscribe to this Observable.
-    this.appState$ = this.siteService.ping$(siteURL)
+    this.appState$ = this.clientService.ping$(clientCompanyURL)
     .pipe(
-      //  Return response, in form of SiteResponse, through a callback function.
+      //  Return response, in form of ClientResponse, through a callback function.
       map(response => {
-        //  Access all sites, get index of site matching siteId.
-        const index = this.dataSubject.value.data.sites.findIndex(
-          site => site.siteId === response.data.site.siteId);
+        //  Access all clients, get index of client matching clientId.
+        const index = this.dataSubject.value.data.clients.findIndex(
+          client => client.clientId === response.data.client.clientId);
         //  Update dataSubject, return it as the data for the frontend.
-        this.dataSubject.value.data.sites[index] = response.data.site;
+        this.dataSubject.value.data.clients[index] = response.data.client;
         //  Reset to an empty string, so spinner will stop showing.
         this.filterSubject.next('');
         return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value } 
       }),
       //  Return while waiting. Returns data subject value from ngOnInit function.
       startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
-      //  Return error from handleError function if error. Return an Observable (SiteResponse)
+      //  Return error from handleError function if error. Return an Observable (CustomResponse)
       catchError((error: string) => {
         this.filterSubject.next('');
         return of({ dataState: DataState.ERROR_STATE, error })
       })
     );
   }
-  */
+
+  //  Function to filter clients.
+  filterClients(clientStatus: ClientStatus): void {
+    //  Set application state. Subscribe to this Observable. Get all servers.
+    this.appState$ = this.clientService.filter$(clientStatus, this.dataSubject.value)
+    .pipe(
+      //  Return response, in form of ClientResponse, through a callback function, providing the filtered response.
+      map(response => {
+        //  Pass filtered response back to appState. this.dataSubject.value stores all the servers, not overwritten.
+        return { dataState: DataState.LOADED_STATE, appData: response } 
+      }),
+      //  Return while waiting. Returns data subject value from ngOnInit function.
+      startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+      //  Return error from handleError function if error. Return an Observable (ClientResponse)
+      catchError((error: string) => {
+        return of({ dataState: DataState.ERROR_STATE, error })
+      })
+    );
+  }
+
+  //  Function to add and save a new client.
+  saveClient(clientForm: NgForm): void {
+    //  Set isLoading to true to start spinner.
+    this.isLoading.next(true);
+    //  Set application state. Subscribe to this Observable. Server in json format.
+    this.appState$ = this.clientService.save$(clientForm.value as Client)
+    .pipe(
+      //  Return response, in form of ClientResponse, through a callback function. Response returns object of client to save.
+      map(response => {
+        //  Add/push new object to dataSubject object,
+        this.dataSubject.next(
+          //  Add new client to the start of the array of clients, then pass in all existing clients.
+          {...response, data: { clients: [response.data.client, ...this.dataSubject.value.data.clients] }}
+        );
+        //  Close modal by getting id of button to close it.
+        document.getElementById('closeModal').click();
+        //  Set isLoading to false to stop spinner.
+        this.isLoading.next(false);
+        //  Reset the form and set the default status in the form as INACTIVE.
+        clientForm.resetForm( { clientStatus: this.ClientStatus.INACTIVE } );
+        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value } 
+      }),
+      //  Return while waiting. Returns data subject value from ngOnInit function.
+      startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+      //  Return error from handleError function if error. Return an Observable (CustomResponse)
+      catchError((error: string) => {
+        //  Set isLoading to false to stop spinner.
+        this.isLoading.next(false);
+        return of({ dataState: DataState.ERROR_STATE, error })
+      })
+    );
+  }
+
+  //  Function to delete a client.
+  deleteClient(client: Client): void {
+    //  Set application state. Subscribe to this Observable.
+    this.appState$ = this.clientService.delete$(client.clientId)
+    .pipe(
+      //  Return response, in form of ClientResponse, through a callback function.
+      map(response => {
+        //  Remove client from list and return new list. Push list of clients.
+        this.dataSubject.next(
+          { ...response, data: 
+            //  Iterate array of clients, remove the element with the matching index from the array.
+            { clients: this.dataSubject.value.data.clients.filter(c => c.clientId !== client.clientId) } }
+        );
+        //  Return the updated array of clients with the clientId specified removed.
+        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value } 
+      }),
+      //  Return while waiting. Returns data subject value from ngOnInit function.
+      startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+      //  Return error from handleError function if error. Return an Observable (ClientResponse)
+      catchError((error: string) => {
+        return of({ dataState: DataState.ERROR_STATE, error })
+      })
+    );
+  }
+
+  //  Function to return PDF of current clients in client table in database with filter.
+  printReport(): void {
+    //  Save as PDF.
+    window.print();
+  }
 
 }
