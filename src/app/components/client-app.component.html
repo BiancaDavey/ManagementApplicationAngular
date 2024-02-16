@@ -116,37 +116,52 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
+                    <!-- Client side validation for form input: form submit button is disabled if form controls not adhered to. -->
+                    <div class="form-group" name="clientFirstNameGroup">
                         <label>First Name</label>
-                        <input type="text" ngModel name="clientFirstName" class="form-control" required>
+                        <input type="text" ngModel name="clientFirstName" class="form-control" required minlength="2" 
+                        maxlength="30" pattern="[A-Za-z]*">
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientFirstName').hasError('minlength')">First name must be at least 2 characters long. </span>
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientFirstName').hasError('pattern')">First name can only contain letters. </span>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" ngModel name="clientLastName" class="form-control" required>
+                        <input type="text" ngModel name="clientLastName" class="form-control" required minlength="2" 
+                        maxlength="30" pattern="[A-Za-z]*">
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientLastName').hasError('minlength')">Last name must be at least 2 characters long. </span>
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientLastName').hasError('pattern')">Last name can only contain letters. </span>
                     </div>
                     <div class="form-group">
                         <label>Company</label>
-                        <input type="text" ngModel name="clientCompany" class="form-control" required>
+                        <input type="text" ngModel name="clientCompany" class="form-control" required maxlength="30">
                     </div>
+                    <!-- TODO: add pattern validation for URL. -->
                     <div class="form-group">
                         <label>Company URL</label>
-                        <input type="text" ngModel name="clientCompanyURL" class="form-control" required>
+                        <input type="url" ngModel url name="clientCompanyURL" class="form-control" required>
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientCompanyURL').hasError('url')">URL must be valid. </span>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="text" ngModel name="clientEmail" class="form-control" required>
+                        <input type="email" ngModel email name="clientEmail" class="form-control" required>
+                        <span class="modal-validation" *ngIf="clientForm.form.get('clientEmail').hasError('email')">Email must be valid. </span>
                     </div>
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
                             <div class="form-group">
                                 <label>Phone Country Code</label>
-                                <input type="text" ngModel name="clientPhoneCountryCode" class="form-control" required>
+                                <input type="text" ngModel name="clientPhoneCountryCode" class="form-control" required 
+                                minlength="1" maxlength="3" pattern="[0-9]*">
+                                <span class="modal-validation" *ngIf="clientForm.form.get('clientPhoneCountryCode').hasError('pattern')">Country code can only contain digits. </span>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
                             <div class="form-group">
                                 <label>Phone</label>
-                                <input type="text" ngModel name="clientPhone" class="form-control" required>
+                                <input type="text" ngModel name="clientPhone" class="form-control" required minlength="5" 
+                                maxlength="17" pattern="[0-9]*">
+                                <span class="modal-validation" *ngIf="clientForm.form.get('clientPhone').hasError('minlength')">Phone number must be at least 5 digits long. </span>
+                                <span class="modal-validation" *ngIf="clientForm.form.get('clientPhone').hasError('pattern')">Phone number can only contain digits. </span>
                             </div>
                         </div>
                     </div>
@@ -163,9 +178,9 @@
                     <!-- Button to close modal. -->
                     <button type="button" class="btn btn-warning" id="closeModal" data-dismiss="modal">Cancel</button>
                     <!-- Button to submit the form to add a new client. -->
-                    <!-- Disable button if client form is invalid (ie. required fields not filled). -->
-                    <!-- Disable button if isLoading is true. Subscribe to isLoading Observable to check. -->
-                    <button type="submit" [disabled]="clientForm.invalid || (isLoading$ | async)" class="btn btn-success">
+                    <!-- Disable button if client form is invalid or if isLoading is true. Subscribe to isLoading Observable to check. -->
+                    <button type="submit" [disabled]="clientForm.invalid || (isLoading$ | async)" 
+                    class="btn btn-success">
                         <!-- Display spinner if isLoading is true. -->
                         <i *ngIf="isLoading$ | async" class="fas fa-spinner fa-spin"></i>
                         <!-- Display text if isLoading is true. Subscribe to the isLoading Observable. -->
@@ -173,6 +188,8 @@
                         <!-- Display text if isLoading is false. Subscribe to the isLoading Observable. -->
                         <span *ngIf="!(isLoading$ | async)">Add</span>
                     </button>
+                    <!--  Display message if client form is invalid. -->
+                    <span class="modal-validation" *ngIf="clientForm.invalid">All fields must be filled in.</span>
                 </div>
             </form>
         </div>
