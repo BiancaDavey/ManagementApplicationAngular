@@ -50,9 +50,9 @@
                                 <th>Company</th>
                                 <th>Company URL</th>
                                 <th>Email</th>
-                                <th>Phone Country Code</th>
+                                <th>Country Code</th>
                                 <th>Phone </th>
-                                <th>Ping</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -65,7 +65,7 @@
                                 <td>{{ client.clientCompany }}</td>
                                 <td>{{ client.clientCompanyURL }}</td>
                                 <td>{{ client.clientEmail }}</td>
-                                <td>{{ client.clientPhoneCountryCode }}</td>
+                                <td>+{{ client.clientPhoneCountryCode }}</td>
                                 <td>{{ client.clientPhone }}</td>
                                 <td>
                                     <!-- Remove underscores from status up and status down for UI. -->
