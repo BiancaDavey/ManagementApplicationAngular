@@ -38,15 +38,15 @@ This application runs with the Java Spring Boot [backend](https://github.com/Bia
 ## Usage Example
 
 * Client application
-[![Client-Application.png](https://i.postimg.cc/kMzpRzTq/Client-Application.png)](https://i.postimg.cc/kMzpRzTq/Client-Application.png)
+[![Client-Application.png](https://i.postimg.cc/HsMWqt3S/Client-Application.png)](https://postimg.cc/1f9Z6wk6)
 
 * Add new client
-[![Client-Application-Add.png](https://i.postimg.cc/Qx7nQmz5/Client-Application-Add.png)](https://i.postimg.cc/Qx7nQmz5/Client-Application-Add.png)
+[![Client-Application-Add.png](https://i.postimg.cc/0yq5PJB9/Client-Application-Add.png)](https://postimg.cc/rKQ29zTH)
 
 * Filter clients
-[![Client-Application-Filter.png](https://i.postimg.cc/J7GFnMcp/Client-Application-Filter.png)](https://i.postimg.cc/J7GFnMcp/Client-Application-Filter.png)
+[![Client-Application-Filter.png](https://i.postimg.cc/DwdvZy9L/Client-Application-Filter.png)](https://postimg.cc/LJ5KQR68)
 
 ## Backend Usage Example
 
-* From [backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot): MySQL Database
+* [Backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot)- View client table in MySQL
 [![My-SQLExample-Data.png](https://i.postimg.cc/ZY8d6ycn/My-SQLExample-Data.png)](https://postimg.cc/kD5GmGLP)
