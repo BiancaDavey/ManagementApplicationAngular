@@ -1,27 +1,52 @@
-# ServerApp
+# Management Application - Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.1.
+This project utilises Angular and is the frontend for the full-stack Management Application, which enables users to manage clients. 
 
-## Development server
+This application runs with the Java Spring Boot [backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot).
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+* Full stack application using Java Spring Boot, MySQL, and Angular
+* Frontend application allowing users to view and manage clients
+* Modal to add new clients with client-side input validation
+* Button to delete clients
+* Button to filter clients by status
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Requirements
 
-## Build
+* Angular
+* MySQL
+* Java
+* Spring Boot
+* This application runs with the [backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Run the Application locally
 
-## Running unit tests
+1. Navigate into the `server` folder from the [backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot) repository.
+2. Run the backend application in IntelliJ.
+3. Navigate into the `server-app` folder.
+4. Start the frontend application: `ng serve`.
+5. Navigate to `http://localhost:4200/` to view the frontend application.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Application Usage
 
-## Running end-to-end tests
+* The application is initialised with example client data
+* Add a new client by clicking on the 'New Client' button and filling in the fields
+* Delete an existing client by clicking on the trash icon next to the client entry
+* Filter clients by status by clicking on the "ALL" button to select the applicable status
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Usage Example
 
-## Further help
+* Client application
+[![Client-Application.png](https://i.postimg.cc/kMzpRzTq/Client-Application.png)](https://i.postimg.cc/kMzpRzTq/Client-Application.png)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+* Add new client
+[![Client-Application-Add.png](https://i.postimg.cc/Qx7nQmz5/Client-Application-Add.png)](https://i.postimg.cc/Qx7nQmz5/Client-Application-Add.png)
+
+* Filter clients
+[![Client-Application-Filter.png](https://i.postimg.cc/J7GFnMcp/Client-Application-Filter.png)](https://i.postimg.cc/J7GFnMcp/Client-Application-Filter.png)
+
+## Backend Usage Example
+
+* From [backend](https://github.com/BiancaDavey/ManagementApplicationSpringBoot): MySQL Database
+[![My-SQLExample-Data.png](https://i.postimg.cc/ZY8d6ycn/My-SQLExample-Data.png)](https://postimg.cc/kD5GmGLP)
